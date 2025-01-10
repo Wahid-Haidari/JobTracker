@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-function LogIn({ onLoginSuccess }) {
+function LogIn() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [token, setToken] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://127.0.0.1:8000/login", form);
+      login();
+      navigate('/profile');
       setToken(response.data.token);
       alert("Login successful!");
-      onLoginSuccess();
     } catch (error) {
       alert("Login failed: " + error.response.data.detail);
     }
