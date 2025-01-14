@@ -5,6 +5,7 @@ import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Authentication from './components/Authentication';
 import Profile from './components/Profile';
+import { AuthProvider } from './contexts/AuthContext';
 import { AuthContext } from './contexts/AuthContext';
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
           <Route path="/profile/*" element={<Profile/>}/>
         </Routes>
       </div>
-
+  
   );
 }
 

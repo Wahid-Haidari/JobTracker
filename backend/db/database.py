@@ -9,7 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # A Session in SQLAlchemy Represents a connection to the database.
 # Acts as a workspace for performing operations like querying, 
 # adding, updating, and deleting records.
-from sqlalchemy.orm import sessionmaker 
+from sqlalchemy.orm import sessionmaker, relationship
+from datetime import datetime
 
 
 '''
@@ -24,28 +25,63 @@ String: A SQLAlchemy data type representing string (text) values in a database c
 create_engine: A function that creates a new SQLAlchemy Engine instance. It establishes 
 a connection to the database and provides an interface to execute SQL commands.
 '''
-from sqlalchemy import Column, Integer, String, create_engine
-from fastapi import FastAPI, HTTPException, Depends
-from passlib.context import CryptContext
-
-
-# Database setup
-DATABASE_URL = "sqlite:///./users.db"
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime, Text, create_engine
 
 # Base model
 Base = declarative_base()
 
+# Association table for many-to-many relationship
+user_application_association = Table(
+    'user_application',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('application_id', Integer, ForeignKey('applications.id'))
+)
+
+
+
+# Database setup
+DATABASE_URL = "sqlite:///./mydatabase.db"
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+
 # User model
 class User(Base):
     __tablename__ = 'users'
-
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+
+    # Many-to-many relationship with Application
+    # applications = relationship(
+    #     "Application",
+    #     secondary=user_application_association,
+    #     back_populates="users"
+    # )
+
+class Application(Base):
+    __tablename__ = 'applications'
+
+    id = Column(Integer, primary_key=True, index=True)
+    company_name = Column(String)
+    position_name = Column(String)
+    date_applied = Column(DateTime, default=datetime.utcnow)
+    application_location = Column(String)  # e.g., LinkedIn, Website, Indeed
+    recruiter_name = Column(String)
+    recruiter_email = Column(String)
+    notes = Column(Text)
+
+    # # Many-to-many relationship with User
+    # users = relationship(
+    #     "User",
+    #     secondary=user_application_association,
+    #     back_populates="applications"
+    # )
+    
 
 # Create tables if they don't exist
 # This line ensures that all the tables defined in your models (like User) 

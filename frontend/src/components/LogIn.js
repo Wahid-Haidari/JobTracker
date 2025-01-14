@@ -11,8 +11,13 @@ function LogIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new URLSearchParams();
+    formData.append('username', form.username);
+    formData.append('password', form.password);
+    
     try {
-      const response = await axios.post("http://127.0.0.1:8000/login", form);
+      const response = await axios.post("http://127.0.0.1:8000/login", formData);
+      localStorage.setItem('token', response.data.access_token);
       login();
       navigate('/profile');
       setToken(response.data.token);
