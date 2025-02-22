@@ -67,12 +67,12 @@ class Application(Base):
     __tablename__ = 'applications'
 
     id = Column(Integer, primary_key=True, index=True)
-    company_name = Column(String)
-    position_name = Column(String)
-    date_applied = Column(DateTime, default=datetime.utcnow)
+    company = Column(String)
+    position = Column(String)
+    date = Column(String)
     application_location = Column(String)  # e.g., LinkedIn, Website, Indeed
-    recruiter_name = Column(String)
-    recruiter_email = Column(String)
+    recruiter = Column(String)
+    recruiter_contact = Column(String)
     notes = Column(Text)
 
     # # Many-to-many relationship with User

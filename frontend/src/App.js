@@ -13,9 +13,9 @@ function App() {
   const { isLoggedIn } = useContext(AuthContext);
 
   return (
-    
+      <AuthProvider>
       <div>
-        {!isLoggedIn && <Authentication/>}
+        {/* {!isLoggedIn && <Authentication/>} */}
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/signup" element={<SignUp/>}/>
@@ -23,6 +23,7 @@ function App() {
           <Route path="/profile/*" element={<Profile/>}/>
         </Routes>
       </div>
+      </AuthProvider>
   
   );
 }

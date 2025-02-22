@@ -9,11 +9,26 @@ const AuthContext = createContext();
 // opening and closing tags of the component when it is used.
 const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const login = () => setIsLoggedIn(true);
-    const logout = () => setIsLoggedIn(false);
+    const [token, setToken] = useState(null); // Store the token
+    const [user, setUser] = useState(null); // Store the user object
+
+    const login = (token, user) => {
+      setIsLoggedIn(true);
+      setToken(token);
+      setUser(user);
+      localStorage.setItem('token', token); // Store token in localStorage
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('token'); // Remove token from localStorage
+};
+
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, token, user, login, logout }}>
           {children}
         </AuthContext.Provider>
     );

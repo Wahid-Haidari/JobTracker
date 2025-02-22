@@ -12,8 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 # CryptContext from Passlib is a utility used for handling password hashing and verification in Python.
 from passlib.context import CryptContext
-from db.database import User, SessionLocal
-from typing import List
+from db.database import User, Application, SessionLocal
 from jose import JWTError, jwt
 from pydantic import BaseModel, EmailStr
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -25,7 +24,7 @@ app = FastAPI()
 # Allow all origins (you can specify specific origins in a production environment)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -134,13 +133,20 @@ def login_and_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        username: str = payload.get("sub")
+        #A JWT consists of three parts: Header, Payload, Signature. 
+        # Payload: Contains the claims or statements about the entity (usually the user) 
+        # and additional data. This is the part where you store information like the 
+        # user's ID, username, roles, and any other necessary data.
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # In JWTs, "sub" typically stands for "subject," which usually represents the unique 
+        # identifier of the user (e.g., their user ID or username).
+        username: str = payload.get("sub") 
         if username is None:
+            #creating an instance of the HTTPException class with the specified attributes (status_code, detail, and headers)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
+                headers={"WWW-Authenticate": "Bearer"}, #It allows you to specify custom HTTP headers that will be included in the response when the exception is raised.
             )
     except JWTError:
         raise HTTPException(
@@ -158,6 +164,42 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 @app.get("/applications")
 def get_user_applications(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return current_user
+    applications = db.query(Application).filter(Application.user_id == current_user.id).all()
+    return applications
 
+
+class ApplicationCreate(BaseModel):
+    company: str
+    position: str
+    date: str
+    application_location: str
+    recruiter: str
+    recruiter_contact: str
+    status: str  # e.g., applied, interviewing, etc.
+    notes: str
+
+
+@app.post("/applications")
+def create_application(
+    application: ApplicationCreate, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)):
+
+    new_application = Application(
+        company = application.company,
+        position = application.position,
+        date = application.date,
+        application_location = application.application_location,
+        recruiter = application.recruiter,
+        recruiter_contact = application.recruiter_contact,
+        status = application.status,
+        notes = application.notes,
+        user_id=current_user.id  # Associate with the current user
+    )
+
+    
+    db.add(new_application)
+    db.commit()
+    db.refresh(new_application)
+    return {"message": "Application created successfully"}
 
