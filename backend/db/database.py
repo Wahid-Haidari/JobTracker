@@ -41,7 +41,7 @@ user_application_association = Table(
 
 
 # Database setup
-DATABASE_URL = "sqlite:///./mydatabase.db"
+DATABASE_URL = "sqlite:///./db/mydatabase.db"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -56,12 +56,8 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
-    # Many-to-many relationship with Application
-    # applications = relationship(
-    #     "Application",
-    #     secondary=user_application_association,
-    #     back_populates="users"
-    # )
+    # Relationship to Application
+    applications = relationship("Application", back_populates="user")
 
 class Application(Base):
     __tablename__ = 'applications'
@@ -73,18 +69,20 @@ class Application(Base):
     application_location = Column(String)  # e.g., LinkedIn, Website, Indeed
     recruiter = Column(String)
     recruiter_contact = Column(String)
+    status = Column(String)
     notes = Column(Text)
 
-    # # Many-to-many relationship with User
-    # users = relationship(
-    #     "User",
-    #     secondary=user_application_association,
-    #     back_populates="applications"
-    # )
-    
+    # ForeignKey('users.id') creates a foreign key constraint meaning: The value in user_id must match an existing id in the users table
+    user_id = Column(Integer, ForeignKey('users.id'))
+
+    # back_populates="applications", This means that the User model should also define a relationship with Application using the same name (applications).
+    user = relationship("User", back_populates="applications")
+
 
 # Create tables if they don't exist
 # This line ensures that all the tables defined in your models (like User) 
 # are created in the database. It checks whether the tables exist in the SQLite 
 # database, and if they don't, it creates them.
+print("Creating database tables...")
 Base.metadata.create_all(bind=engine)
+print("Database tables created.")

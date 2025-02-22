@@ -21,13 +21,13 @@ from datetime import datetime, timedelta
 
 app = FastAPI()
 
-# Allow all origins (you can specify specific origins in a production environment)
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],  # Allow requests from this origin
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # creating a CryptContext object from the Passlib library, which is 

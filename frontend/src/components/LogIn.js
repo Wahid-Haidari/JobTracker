@@ -17,10 +17,18 @@ function LogIn() {
     
     try {
       const response = await axios.post("http://127.0.0.1:8000/login", formData);
-      localStorage.setItem('token', response.data.access_token);
-      login();
+      const token = response.data.access_token;
+      localStorage.setItem('token', token);
+
+      // Define the user object
+      const user = { username: form.username };
+
+      // Call login with the token and user data
+      login(token, user); // Pass token and user object
+
+
       navigate('/profile');
-      setToken(response.data.token);
+      setToken(token);
       alert("Login successful!");
     } catch (error) {
       alert("Login failed: " + error.response.data.detail);

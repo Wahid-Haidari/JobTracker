@@ -23,7 +23,7 @@ function Header() {
 
     return (
       <div>
-        {isLoggedIn && <p>Welcome, {user?.username}!</p>} {/* Display the logged-in user's username */}
+        {isLoggedIn && <p>Welcome, {user.username}!</p>} {/* Display the logged-in user's username */}
         <button onClick={handleTodo}>To Do</button>
         <button onClick={handleApplications}>My Applications</button>
         <button onClick={handleLogout}>Log Out</button>
