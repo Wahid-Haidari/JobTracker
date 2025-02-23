@@ -29,28 +29,32 @@ function LogIn() {
 
       navigate('/profile');
       setToken(token);
-      alert("Login successful!");
+      //alert("Login successful!");
     } catch (error) {
       alert("Login failed: " + error.response.data.detail);
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className='bg-myBackground min-h-screen'>
+      <form onSubmit={handleSubmit} className='flex flex-col items-center p-20'>
         <input
           type="text"
           placeholder="Username"
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
+          className='m-1 py-1 px-3 w-60 rounded'
         />
         <input
           type="password"
           placeholder="Password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+          className='m-1 py-1 px-3 w-60 rounded'
         />
-        <button type="submit">Log In</button>
+        <button type="submit" 
+        className="caret-transparent bg-myDarkGreen text-white m-1 py-1 px-3 w-60 
+        text-sm rounded transition-transform duration-200 hover:scale-105">Log In</button>
       </form>
       {token && ( <h3>Your Token: {token}</h3>)}
     </div>

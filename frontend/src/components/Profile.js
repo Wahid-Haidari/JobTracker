@@ -5,7 +5,7 @@ import Applications from './Applications';
 
 function Profile() {
     return (
-      <div>
+      <div className='bg-myBackground min-h-screen py-3 px-5'>
         <Header/>
         <Routes>
             <Route path="todo" element={<Todo />} />
