@@ -26,16 +26,15 @@ services:
         generateValue: true
     autoDeploy: true
 
-  # === React frontend (Create React App + Tailwind) ===
-  - type: static
-    name: job-tracker-ui
+staticSites:
+  - name: job-tracker-ui
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    staticPublishPath: build
+    staticPublishPath: build          # CRA outputs to 'build'
     envVars:
       - key: REACT_APP_API_BASE_URL
         value: https://job-tracker-api.onrender.com
     routes:
-      - type: rewrite
+      - type: rewrite                  # SPA refresh fix
         source: "/*"
         destination: "/index.html"
