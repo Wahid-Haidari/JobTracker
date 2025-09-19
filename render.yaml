@@ -30,11 +30,11 @@ staticSites:
   - name: job-tracker-ui
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    staticPublishPath: build          # CRA outputs to 'build'
+    publishPath: build                 # <-- changed from staticPublishPath
     envVars:
       - key: REACT_APP_API_BASE_URL
         value: https://job-tracker-api.onrender.com
     routes:
-      - type: rewrite                  # SPA refresh fix
+      - type: rewrite
         source: "/*"
         destination: "/index.html"
