@@ -1,3 +1,6 @@
+import os
+
+
 # declarative_base is a function provided by SQLAlchemy that is 
 # used to create a base class for your ORM (Object-Relational Mapping) models.
 # An ORM model in the context of SQLAlchemy refers to a Python class that 
@@ -10,8 +13,6 @@ from sqlalchemy.ext.declarative import declarative_base
 # Acts as a workspace for performing operations like querying, 
 # adding, updating, and deleting records.
 from sqlalchemy.orm import sessionmaker, relationship
-from datetime import datetime
-
 
 '''
 Column: Defines a column in a database table. You use it to specify the column's 
@@ -41,9 +42,9 @@ user_application_association = Table(
 
 
 # Database setup
-DATABASE_URL = "sqlite:///./db/mydatabase.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./db/mydatabase.db")
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -84,5 +85,7 @@ class Application(Base):
 # are created in the database. It checks whether the tables exist in the SQLite 
 # database, and if they don't, it creates them.
 print("Creating database tables...")
-Base.metadata.create_all(bind=engine)
+if DATABASE_URL.startswith("sqlite"):
+    Base.metadata.create_all(bind=engine)
+
 print("Database tables created.")

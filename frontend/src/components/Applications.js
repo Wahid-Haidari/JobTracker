@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../api";
 function Applications(){
 
     const [form, setForm] = useState({ 
@@ -14,11 +14,12 @@ function Applications(){
     const fetchApplications = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get("http://127.0.0.1:8000/applications", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            // const response = await axios.get("http://127.0.0.1:8000/applications", {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            // });
+            const response = await api.get("/applications");
             setApplications(response.data);
         } catch (error) {
             console.error("Error fetching applications:", error);
@@ -32,11 +33,12 @@ function Applications(){
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post("http://127.0.0.1:8000/applications", form, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            // const response = await axios.post("http://127.0.0.1:8000/applications", form, {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            // });
+            const response = await api.post("/applications", form);
 
             alert(response.data.message);
             fetchApplications();  // Refresh the list after adding a new application

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
+import { api } from "../api";
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,8 @@ function LogIn() {
     formData.append('password', form.password);
     
     try {
-      const response = await axios.post("http://127.0.0.1:8000/login", formData);
+      const response = await api.post("/login", formData);
+      // Save JWT for subsequent requests
       const token = response.data.access_token;
       localStorage.setItem('token', token);
 

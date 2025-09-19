@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { api } from "../api";
 
 function SignUp() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -7,7 +7,7 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/signup", form);
+      const response = await api.post("/signup", form);
       alert(response.data.message);
     } catch (error) {
       alert("Registration failed: " + error.response.data.detail);

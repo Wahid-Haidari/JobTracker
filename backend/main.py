@@ -9,6 +9,7 @@ Resource Sharing (CORS). It allows your FastAPI application to accept requests
 from different domains or origins.
 '''
 from fastapi.middleware.cors import CORSMiddleware
+import os
 from sqlalchemy.orm import Session
 # CryptContext from Passlib is a utility used for handling password hashing and verification in Python.
 from passlib.context import CryptContext
@@ -19,16 +20,33 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
 
 
+
 app = FastAPI()
 
-# Add CORS middleware
+# # Add CORS middleware
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["http://localhost:3000"],  # Allow requests from this origin
+#     allow_credentials=True,
+#     allow_methods=["*"],  # Allow all HTTP methods
+#     allow_headers=["*"],  # Allow all headers
+# )
+
+
+# --- CORS setup (env-driven for Render) ---
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else []
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow requests from this origin
+    allow_origins=origins or ["*"],   # you can tighten this later
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+# --- Health endpoint for Render ---
+@app.get("/health")
+def health():
+    return {"ok": True}
 
 # creating a CryptContext object from the Passlib library, which is 
 # used for handling password hashing and verification.
@@ -89,10 +107,15 @@ def get_users(db: Session = Depends(get_db)):
     return users
 
 
-SECRET_KEY = "your-secret-key" #a secret string used to sign and verify the JWT tokens.
-ALGORITHM = "HS256" #This specifies the algorithm used for encoding and decoding the JWT token
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+# Before Deploying
+# SECRET_KEY = "your-secret-key" #a secret string used to sign and verify the JWT tokens.
+# ALGORITHM = "HS256" #This specifies the algorithm used for encoding and decoding the JWT token
+# ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+# --- JWT setup ---
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-secret-change-in-render")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 def authenticate_user(username: str, password: str, db: Session):

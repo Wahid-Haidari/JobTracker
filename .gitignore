@@ -29,3 +29,15 @@ backend/*.py[cod]
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Node & Python junk
+frontend/node_modules/
+**/__pycache__/
+*.pyc
+
+# Local env files
+frontend/.env
+frontend/.env.local
+
+# Local Python venv (if you have one)
+backend/venv/
