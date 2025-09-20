@@ -41,7 +41,7 @@ A full-stack web app to help you manage your job applications — track companie
 
 
 ### Signup
-![Signup Page](assets/signup.png)
+![Signup Page](assets/Signup.png)
 
 ### Applications
 ![Applications Page](assets/applications.png)
