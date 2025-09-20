@@ -3,7 +3,6 @@ databases:
     plan: free
 
 services:
-  # === FastAPI backend ===
   - type: web
     name: job-tracker-api
     env: python
@@ -26,8 +25,7 @@ services:
         generateValue: true
     autoDeploy: true
 
-  # === React frontend (CRA) ===
-    - type: static_site
+  - type: static_site
     name: job-tracker-ui
     rootDir: frontend
     buildCommand: npm ci && npm run build
@@ -37,6 +35,5 @@ services:
         value: https://job-tracker-api.onrender.com
     routes:
       - type: rewrite
-        source: "/*"
-        destination: "/index.html"
-
+        source: /*
+        destination: /index.html
