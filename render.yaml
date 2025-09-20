@@ -26,11 +26,12 @@ services:
         generateValue: true
     autoDeploy: true
 
-staticSites:
-  - name: job-tracker-ui
+  # === React frontend (CRA) ===
+    - type: static_site
+    name: job-tracker-ui
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    publishPath: build                 # <-- changed from staticPublishPath
+    publishPath: build
     envVars:
       - key: REACT_APP_API_BASE_URL
         value: https://job-tracker-api.onrender.com
@@ -38,3 +39,4 @@ staticSites:
       - type: rewrite
         source: "/*"
         destination: "/index.html"
+
