@@ -24,16 +24,3 @@ services:
       - key: SECRET_KEY
         generateValue: true
     autoDeploy: true
-
-  - type: static_site
-    name: job-tracker-ui
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    publishPath: build
-    envVars:
-      - key: REACT_APP_API_BASE_URL
-        value: https://job-tracker-api.onrender.com
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
