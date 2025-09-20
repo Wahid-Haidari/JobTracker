@@ -39,8 +39,12 @@ A full-stack web app to help you manage your job applications — track companie
 
 ## 📸 Screenshots
 
-image.png
-image.png
+
+### Signup
+![Signup Page](assets/signup.png)
+
+### Applications
+![Applications Page](assets/applications.png)
 ---
 
 ## ⚙️ Getting Started (Local Dev)
